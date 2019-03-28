@@ -7,13 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthCheckController {
 
-    @RequestMapping(
-            name = "healthCheckEndpoint",
-            method = RequestMethod.GET,
-            value = "/"
-    )
+    @RequestMapping(name = "healthCheckEndpoint", method = RequestMethod.GET, value = "/")
     public String healthCheck() {
-        return "Greetings from the Holidu interview assignment!";
+	return "Greetings from the Holidu interview assignment!";
     }
 
 }

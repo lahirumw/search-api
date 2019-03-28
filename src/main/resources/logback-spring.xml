@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<contextName>TREE-DATA-SERIVCE</contextName>
+
+	<!-- local development application environment -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+			<![CDATA[
+			%d{yyyy-MM-dd HH:mm:ss} %contextName [${ENV}] [%thread] %-5level %logger{5} [%X{URI}] - %msg%n%rEx{20}
+			]]>
+			</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="console" />
+	</root>
+
+</configuration>
