@@ -2,6 +2,7 @@ package com.holidu.interview.tree.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -32,7 +33,11 @@ public class TreeControllerTest {
 	
 	Mockito.when(treeService.getTree(Mockito.anyMap())).thenReturn(response);
 	
-	Map<String, Integer> result = treeController.getCommonName(new ArrayList<>(), "20");
+	List<String> cartisen = new ArrayList<>();
+	cartisen.add("1");
+	cartisen.add("2");
+	
+	Map<String, Integer> result = treeController.getCommonName(cartisen, "20");
 	
 	Assert.assertNotNull(result);
 	Assert.assertEquals(response.get("red maple"), result.get("red maple"));

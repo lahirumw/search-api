@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -59,18 +58,15 @@ public class TreeServiceTest {
 	trees.add(t1);
 	trees.add(t2);
 
-	ResponseEntity<List<Tree>> response = new ResponseEntity<List<Tree>>(HttpStatus.OK);
-	
-	//System.out.println(response.getBody().get(0).getSpcCommon());
-	Mockito.when(restTemplate.exchange(Matchers.eq("https://data.cityofnewyork.us/resource/nwxe-4ae8.json"),
-	        Matchers.eq(HttpMethod.GET), 
-		Matchers.<HttpEntity<List<Tree>>>any(), 
-		Matchers.<ParameterizedTypeReference<List<Tree>>>any())).thenReturn(response);
+	ResponseEntity<List<Tree>> response = new ResponseEntity<List<Tree>>(trees,HttpStatus.OK);
+
+        Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.<HttpEntity<List<Tree>>>any(),
+        	Mockito.<ParameterizedTypeReference<List<Tree>>>any())).thenReturn(response);
 	
 	Map<String, BigDecimal> map = new HashMap<>();
-	map.put("x", new BigDecimal(1));
-	map.put("y", new BigDecimal(1));
-	map.put("radious", new BigDecimal(1));
+	map.put("x", new BigDecimal(100));
+	map.put("y", new BigDecimal(100));
+	map.put("radius", new BigDecimal(100));
 
 	Map<String, Integer> result = treeService.getTree(map);
 
