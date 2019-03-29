@@ -2,6 +2,9 @@ package com.holidu.interview.assignment.utils;
 
 import java.math.BigDecimal;
 
+import com.holidu.interview.assignment.constants.ExceptionMessages;
+import com.holidu.interview.assignment.exceptions.BadRequestException;
+
 /**
  * Value Conversion Class
  * 
@@ -20,9 +23,14 @@ public final class ConversionUtils {
      * @return
      * @throws Exception 
      */
-    public static BigDecimal inputConversion(String input) throws Exception{
+    public static BigDecimal inputConversion(String input){
 	
-	return new BigDecimal(input);
+	try {
+	    return new BigDecimal(input);
+	}catch(Exception e) {
+	    
+	    throw new BadRequestException(ExceptionMessages.VALIDATION_DEFAULT, e);
+	}
 
     }
 

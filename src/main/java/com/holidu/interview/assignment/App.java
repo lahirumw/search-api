@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Application Start Up class
+ * 
  * @author lahirua
  *
  */

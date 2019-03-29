@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.holidu.interview.assignment.constants.FieldNameConstants;
+import com.holidu.interview.assignment.exceptions.NotFoundException;
 import com.holidu.interview.assignment.tree.model.Tree;
 
 /**
@@ -31,7 +32,7 @@ import com.holidu.interview.assignment.tree.model.Tree;
 @Service
 @PropertySource(value = { "classpath:${ENV:}/environment.properties" })
 public class TreeService {
-
+  
     private static final Logger LOGGER = LoggerFactory.getLogger(TreeService.class);
 
     @Autowired
@@ -40,50 +41,67 @@ public class TreeService {
     @Value("${TREE_DATA_PULL_URL}")
     private String treeDataPullUrl;
 
+    
     /**
-     * Get count recurent values
+     * Get the Count of Recurrent Values of Common Name
      * 
-     * @return
-     */
-    public Map<String, Integer> getTree(Map<String, BigDecimal> inputParams) throws Exception{
-	
-	LOGGER.info("Start Calling Data pull URL");
-	
-	ResponseEntity<List<Tree>> response = restTemplate.exchange(treeDataPullUrl, HttpMethod.GET, null,
-		new ParameterizedTypeReference<List<Tree>>() {
-		});
-	
-	LOGGER.info("End of Calling Data pull URL");
-	
-	List<Tree> trees = response.getBody();
-	
+     * @param inputParams
+     * 			: x_sp, y_sp and radius params
+     * 
+     * @return {@link Map}
+     */   
+    public Map<String, Integer> getTree(Map<String, BigDecimal> inputParams) {
+
+	List<Tree> trees = new ArrayList<>();
+	try {
+	    LOGGER.info("Start Calling Data pull URL");
+	    
+	    ResponseEntity<List<Tree>> response = restTemplate.exchange(treeDataPullUrl, HttpMethod.GET, null,
+		    new ParameterizedTypeReference<List<Tree>>() {
+		    });
+
+	    LOGGER.info("End of Calling Data pull URL");
+
+	    trees = response.getBody();
+	    
+	} catch (Exception e) {
+	    
+	    throw new InternalError(e);
+	}
+
 	List<String> commonNameValues = new ArrayList<>();
 
-	for (Tree tree : trees) {
-	    
-	    BigDecimal radius = tree.getStumDiam().divide(new BigDecimal(2));
-	    
-	    if(inputParams.get(FieldNameConstants.RADIUS).compareTo(radius) >= 0 
-		    && inputParams.get(FieldNameConstants.X_COORDINATE).compareTo(tree.getxSp()) >=0
-		    && inputParams.get(FieldNameConstants.Y_COORDINATE).compareTo(tree.getySp()) >=0
-		    && tree.getSpcCommon() != null) {
-        		
-        		commonNameValues.add(tree.getSpcCommon());
+	if (trees != null && !trees.isEmpty()) {
+
+	    for (Tree tree : trees) {
+
+		BigDecimal radius = tree.getStumDiam().divide(new BigDecimal(2));
+
+		if (inputParams.get(FieldNameConstants.RADIUS).compareTo(radius) >= 0
+			&& inputParams.get(FieldNameConstants.X_COORDINATE).compareTo(tree.getxSp()) >= 0
+			&& inputParams.get(FieldNameConstants.Y_COORDINATE).compareTo(tree.getySp()) >= 0
+			&& tree.getSpcCommon() != null) {
+
+		    commonNameValues.add(tree.getSpcCommon());
+		}
 	    }
+	}else {
+	    throw new NotFoundException();
 	}
 
 	return getCountOfRecurrnetValues(commonNameValues);
-	
-	
+
     }
 
+    
     /**
      * Get the count of recurrent values in the list
      * 
      * @param treeValues
-     *                       List of common name
+     *                   : List of common name of trees
      * 
-     * @return
+     * @return {@link Map}
+     * 
      */
     private Map<String, Integer> getCountOfRecurrnetValues(List<String> treeValues) {
 

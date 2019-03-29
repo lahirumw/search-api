@@ -9,7 +9,7 @@ package com.holidu.interview.assignment.constants;
 public final class FieldNameConstants {
     
     private FieldNameConstants() {
-	
+	// private constructor to prevent creation.
     }
 
     public static final String X_COORDINATE = "x";
